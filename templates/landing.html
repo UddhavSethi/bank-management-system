@@ -1,0 +1,80 @@
+<!-- landing.html -->
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Apex Bank Management System — Welcome</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+	<script src="{{ url_for('static', filename='landing.js') }}" defer></script>
+	<meta name="description" content="A modern, secure, and responsive landing page for Apex Bank Management System.">
+</head>
+<body>
+	<!-- Animated background (pure CSS) -->
+	<div class="bg" aria-hidden="true">
+		<span class="bubble b1"></span>
+		<span class="bubble b2"></span>
+		<span class="bubble b3"></span>
+		<span class="bubble b4"></span>
+		<span class="bubble b5"></span>
+		<span class="bubble b6"></span>
+	</div>
+
+	<header class="site-header" role="banner">
+		<nav class="nav" aria-label="Primary">
+			<a class="brand" href="#" aria-label="Apex Bank home">
+				<!-- Inline SVG placeholder logo -->
+				<svg class="logo" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+					<defs>
+						<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#7ec8e3"/>
+							<stop offset="100%" stop-color="#9be3c7"/>
+						</linearGradient>
+					</defs>
+					<circle cx="24" cy="24" r="20" fill="url(#g)"></circle>
+					<path d="M12 28 L24 14 L36 28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M17 28 V34 H31 V28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="brand-name">Apex Bank</span>
+			</a>
+			<p class="tagline" role="note">Trusted. Simple. Always within reach.</p>
+		</nav>
+	</header>
+
+	<main id="main" class="main" role="main">
+		<section class="hero" aria-labelledby="hero-title">
+			<div class="card" role="region" aria-label="Welcome">
+				<h1 id="hero-title">Manage your money with confidence</h1>
+				<p class="lead">Secure, fast, and intuitive tools for everyday banking.</p>
+				<div class="actions" role="group" aria-label="Primary actions">
+					<button id="loginBtn" class="btn btn-primary">
+						<!-- Login icon -->
+						<svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+							<path d="M15 12H3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+							<path d="M21 21V3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".35"></path>
+						</svg>
+						<span>Login</span>
+					</button>
+					<button id="createBtn" class="btn btn-secondary">
+						<!-- Create account icon -->
+						<svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+							<circle cx="12" cy="8" r="3.5" fill="currentColor" opacity=".15"></circle>
+							<path d="M12 14c-3.314 0-6 1.686-6 3.764V20h12v-2.236C18 15.686 15.314 14 12 14z" fill="currentColor" opacity=".15"></path>
+							<path d="M12 5a3 3 0 110 6 3 3 0 010-6zM6 17.764C6 16.237 8.686 15 12 15s6 1.237 6 2.764V20H6v-2.236z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+							<path d="M19 7v4M21 9h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+						</svg>
+						<span>Create Account</span>
+					</button>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<small>&copy; <span id="year"></span> Apex Bank Management System. All rights reserved.</small>
+	</footer>
+</body>
+</html>
+
+

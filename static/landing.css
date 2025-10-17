@@ -1,0 +1,161 @@
+/* landing.css */
+/* CSS variables keep palette/spacing organized and consistent */
+:root{
+	--bg1: #eef6fb;
+	--bg2: #e9f8f3;
+	--text: #22303a;
+	--muted: #5b6b75;
+	--primary: #1f7aa5;      /* soft corporate blue */
+	--primary-strong: #176488;
+	--secondary: #2e9e7b;    /* soft green */
+	--secondary-strong: #227b60;
+	--card: rgba(255,255,255,0.65);
+	--border: rgba(0,0,0,0.06);
+	--shadow: 0 10px 30px rgba(30, 60, 90, 0.12);
+	--radius: 16px;
+	--space-1: .5rem;
+	--space-2: 1rem;
+	--space-3: 1.5rem;
+	--space-4: 2rem;
+	--space-6: 3rem;
+}
+
+/* Base reset-lite */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+	margin:0;
+	color:var(--text);
+	background: linear-gradient(120deg, var(--bg1), var(--bg2));
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+	line-height:1.5;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+}
+
+/* Subtle animated gradient background */
+@keyframes gradientShift{
+	0%{background-position: 0% 50%}
+	50%{background-position: 100% 50%}
+	100%{background-position: 0% 50%}
+}
+body{
+	background-size: 200% 200%;
+	animation: gradientShift 18s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce){
+	body{animation: none}
+}
+
+/* Floating pastel bubbles for depth */
+.bg{
+	position:fixed; inset:0;
+	overflow:hidden;
+	pointer-events:none;
+}
+.bubble{
+	position:absolute; border-radius:999px;
+	background: radial-gradient(circle at 30% 30%, rgba(126,200,227,.45), rgba(155,227,199,.25));
+	filter: blur(0.2px);
+	will-change: transform, opacity;
+	animation: float 18s ease-in-out infinite;
+}
+.b1{width:220px; height:220px; left:5%; top:60%; animation-duration: 22s}
+.b2{width:140px; height:140px; left:75%; top:15%; animation-duration: 19s}
+.b3{width:180px; height:180px; left:60%; top:70%; animation-duration: 24s}
+	.b3{}
+.b4{width:120px; height:120px; left:15%; top:20%; animation-duration: 17s}
+.b5{width:90px; height:90px; left:85%; top:55%; animation-duration: 21s}
+.b6{width:160px; height:160px; left:35%; top:10%; animation-duration: 23s}
+
+@keyframes float{
+	0%{ transform: translateY(0) translateX(0); opacity:.55}
+	50%{ transform: translateY(-20px) translateX(8px); opacity:.8}
+	100%{ transform: translateY(0) translateX(0); opacity:.55}
+}
+@media (prefers-reduced-motion: reduce){
+	.bubble{animation:none}
+}
+
+/* Layout */
+.site-header{padding: var(--space-2) var(--space-3)}
+.nav{
+	display:flex; align-items:center; justify-content:space-between;
+	max-width:1100px; margin:0 auto;
+}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; color:inherit}
+.logo{flex:0 0 auto}
+.brand-name{font-weight:700; letter-spacing:.2px}
+.tagline{margin:0; color:var(--muted); font-size:.95rem}
+
+.main{
+	display:grid; place-items:center;
+	min-height: calc(100dvh - 140px);
+	padding: var(--space-3);
+}
+
+.hero{width:100%; max-width: 980px}
+.card{
+	margin-inline:auto;
+	padding: clamp(var(--space-3), 3vw, var(--space-6));
+	background: var(--card);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	backdrop-filter: saturate(140%) blur(10px);
+	-webkit-backdrop-filter: saturate(140%) blur(10px);
+	text-align:center;
+}
+.card h1{
+	margin:0 0 var(--space-2) 0;
+	font-size: clamp(1.6rem, 3.8vw, 2.4rem);
+	letter-spacing:.2px;
+}
+.lead{
+	margin:0 auto var(--space-3) auto;
+	color:var(--muted);
+	max-width: 48ch;
+}
+
+/* Buttons */
+.actions{display:flex; gap: var(--space-2); justify-content:center; flex-wrap:wrap}
+.btn{
+	appearance:none; border:0; cursor:pointer;
+	display:inline-flex; align-items:center; gap:.6rem;
+	font-weight:600; letter-spacing:.2px;
+	padding:.85rem 1.1rem;
+	border-radius: 999px;
+	transition: background-color .2s ease, transform .06s ease, box-shadow .2s ease;
+	box-shadow: 0 6px 18px rgba(31,122,165,.18);
+}
+.btn .btn-icon{display:block}
+.btn-primary{
+	background: var(--primary);
+	color:#fff;
+}
+.btn-primary:hover{background: var(--primary-strong)}
+.btn-secondary{
+	background: #e6f5ef;
+	color: var(--secondary-strong);
+	box-shadow: 0 6px 18px rgba(46,158,123,.12);
+}
+.btn-secondary:hover{background:#d9f0e7; color:var(--secondary-strong)}
+.btn:active{transform: translateY(1px)}
+.btn:focus-visible{
+	outline: 3px solid color-mix(in oklab, var(--primary) 60%, white);
+	outline-offset: 2px;
+}
+
+/* Footer */
+.site-footer{
+	text-align:center; padding: var(--space-4) var(--space-3);
+	color: var(--muted);
+}
+
+/* Responsive tweaks */
+@media (min-width: 800px){
+	.card{ text-align:center }
+	.actions{ justify-content:center }
+}
+
+

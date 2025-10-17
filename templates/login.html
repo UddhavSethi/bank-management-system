@@ -1,0 +1,97 @@
+<!-- login.html -->
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Login — Apex Bank Management System</title>
+	<meta name="description" content="Secure login to Apex Bank Management System.">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+	<script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
+</head>
+<body>
+	<!-- Animated background (pure CSS; respects reduced motion) -->
+	<div class="bg" aria-hidden="true">
+		<span class="bubble b1"></span>
+		<span class="bubble b2"></span>
+		<span class="bubble b3"></span>
+		<span class="bubble b4"></span>
+		<span class="bubble b5"></span>
+		<span class="bubble b6"></span>
+	</div>
+
+	<header class="site-header" role="banner">
+		<nav class="nav" aria-label="Primary">
+			<a class="brand" href="/" aria-label="Apex Bank home">
+				<!-- Inline SVG placeholder logo (matches landing) -->
+				<svg class="logo" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+					<defs>
+						<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#7ec8e3"/>
+							<stop offset="100%" stop-color="#9be3c7"/>
+						</linearGradient>
+					</defs>
+					<circle cx="24" cy="24" r="20" fill="url(#g)"></circle>
+					<path d="M12 28 L24 14 L36 28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M17 28 V34 H31 V28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="brand-name">Apex Bank</span>
+			</a>
+			<p class="tagline" role="note">Trusted. Simple. Always within reach.</p>
+		</nav>
+	</header>
+
+	<main class="main" role="main">
+		<section class="auth" aria-labelledby="login-title">
+			<div class="card" role="region" aria-label="Login form area">
+				<h1 id="login-title">Secure Portal Login</h1>
+				<p class="lead">Please sign in to continue.</p>
+
+				<form id="loginForm" class="form" novalidate aria-describedby="formHelp">
+					<!-- Username/email -->
+					<div class="field">
+						<label for="username">Username or Email</label>
+						<input id="username" name="username" type="text" inputmode="email" autocomplete="username" required aria-required="true" placeholder="you@example.com">
+						<p class="error" id="userError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<!-- Password with toggle button -->
+					<div class="field">
+						<label for="password">Password</label>
+						<div class="password-wrap">
+							<input id="password" name="password" type="password" autocomplete="current-password" required aria-required="true" placeholder="Enter your password">
+							<button type="button" class="toggle" id="togglePwd" aria-label="Show password" aria-pressed="false" title="Toggle password visibility">
+								<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+									<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" fill="none" stroke="currentColor" stroke-width="2"/>
+									<circle cx="12" cy="12" r="3" fill="currentColor"/>
+								</svg>
+							</button>
+						</div>
+						<p class="error" id="passError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<!-- Actions -->
+					<div class="actions">
+						<button type="submit" class="btn btn-primary" id="loginBtn">
+							<svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M10 17l5-5-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+								<path d="M15 12H3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+								<path d="M21 21V3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".35"></path>
+							</svg>
+							<span>Login</span>
+						</button>
+						<a href="/" class="link-home" id="backHome" aria-label="Back to home">Back to Home</a>
+					</div>
+					<p id="formHelp" class="help">Use a secure device and trusted network.</p>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<small>&copy; <span id="year"></span> Apex Bank Management System.</small>
+	</footer>
+</body>
+</html>
+
+

@@ -1,0 +1,119 @@
+<!-- register.html -->
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Create Account — Apex Bank Management System</title>
+	<meta name="description" content="Open a secure Apex Bank account.">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+	<script src="{{ url_for('static', filename='js/register.js') }}" defer></script>
+</head>
+<body>
+	<!-- Animated background (reused theme) -->
+	<div class="bg" aria-hidden="true">
+		<span class="bubble b1"></span>
+		<span class="bubble b2"></span>
+		<span class="bubble b3"></span>
+		<span class="bubble b4"></span>
+		<span class="bubble b5"></span>
+		<span class="bubble b6"></span>
+	</div>
+
+	<header class="site-header" role="banner">
+		<nav class="nav" aria-label="Primary">
+			<a class="brand" href="/" aria-label="Apex Bank home">
+				<!-- Inline SVG placeholder logo -->
+				<svg class="logo" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+					<defs>
+						<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#7ec8e3"/>
+							<stop offset="100%" stop-color="#9be3c7"/>
+						</linearGradient>
+					</defs>
+					<circle cx="24" cy="24" r="20" fill="url(#g)"></circle>
+					<path d="M12 28 L24 14 L36 28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M17 28 V34 H31 V28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="brand-name">Apex Bank</span>
+			</a>
+			<p class="tagline" role="note">Trusted. Simple. Always within reach.</p>
+		</nav>
+	</header>
+
+	<main class="main" role="main">
+		<section class="auth" aria-labelledby="register-title">
+			<div class="card" role="region" aria-label="Create account form area">
+				<h1 id="register-title">Create your account</h1>
+				<p class="lead">A few details to get you started.</p>
+
+				<form id="registerForm" class="form" novalidate aria-describedby="formHelp">
+					<div class="field">
+						<label for="fullName">Full name</label>
+						<input id="fullName" name="fullName" type="text" autocomplete="name" required aria-required="true" placeholder="Jane Doe">
+						<p class="error" id="nameError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<div class="field">
+						<label for="email">Email</label>
+						<input id="email" name="email" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com">
+						<p class="error" id="emailError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<div class="field">
+						<label for="phone">Phone (optional)</label>
+						<input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567">
+					</div>
+
+					<div class="field">
+						<label for="password">Password</label>
+						<div class="password-wrap">
+							<input id="password" name="password" type="password" autocomplete="new-password" required aria-required="true" minlength="8" placeholder="At least 8 characters">
+							<button type="button" class="toggle" id="togglePwd" aria-label="Show password" aria-pressed="false" title="Toggle password visibility">
+								<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+									<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" fill="none" stroke="currentColor" stroke-width="2"/>
+									<circle cx="12" cy="12" r="3" fill="currentColor"/>
+								</svg>
+							</button>
+						</div>
+						<p class="error" id="passError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<div class="field">
+						<label for="confirm">Confirm password</label>
+						<input id="confirm" name="confirm" type="password" autocomplete="new-password" required aria-required="true" placeholder="Re-enter your password">
+						<p class="error" id="confirmError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<div class="field terms">
+						<label class="check">
+							<input id="terms" name="terms" type="checkbox" required aria-required="true">
+							<span>I agree to the <a href="#" class="inline-link">Terms</a> and <a href="#" class="inline-link">Privacy Policy</a></span>
+						</label>
+						<p class="error" id="termsError" role="alert" aria-live="polite"></p>
+					</div>
+
+					<div class="actions">
+						<button type="submit" class="btn btn-primary" id="createBtn">
+							<svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+							</svg>
+							<span>Create Account</span>
+						</button>
+						<a href="/" class="link-home" id="backHome" aria-label="Back to home">Back to Home</a>
+					</div>
+
+					<p class="help">Already have an account? <a class="inline-link" id="toLogin" href="/login">Login</a></p>
+					<p id="formHelp" class="help muted">Use a secure device and trusted network.</p>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<small>&copy; <span id="year"></span> Apex Bank Management System.</small>
+	</footer>
+</body>
+</html>
+
+
