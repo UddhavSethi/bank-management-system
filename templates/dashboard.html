@@ -1,0 +1,213 @@
+<!-- dashboard.html -->
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dashboard — Apex Bank Management System</title>
+	<meta name="description" content="Your secure banking dashboard.">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+	<script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+</head>
+<body>
+	<!-- Animated background (pure CSS; respects reduced motion) -->
+	<div class="bg" aria-hidden="true">
+		<span class="bubble b1"></span>
+		<span class="bubble b2"></span>
+		<span class="bubble b3"></span>
+		<span class="bubble b4"></span>
+		<span class="bubble b5"></span>
+		<span class="bubble b6"></span>
+	</div>
+
+	<header class="site-header" role="banner">
+		<nav class="nav" aria-label="Primary">
+			<a class="brand" href="/" aria-label="Apex Bank home">
+				<!-- Inline SVG placeholder logo -->
+				<svg class="logo" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+					<defs>
+						<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#7ec8e3"/>
+							<stop offset="100%" stop-color="#9be3c7"/>
+						</linearGradient>
+					</defs>
+					<circle cx="24" cy="24" r="20" fill="url(#g)"></circle>
+					<path d="M12 28 L24 14 L36 28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M17 28 V34 H31 V28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="brand-name">Apex Bank</span>
+			</a>
+			<div class="user-info">
+				<span class="welcome">Welcome, <strong>{{ username }}</strong></span>
+				<div class="nav-links">
+					<a href="/logout" class="logout-btn" aria-label="Logout">
+						<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<polyline points="16,17 21,12 16,7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<line x1="21" y1="12" x2="9" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+						Logout
+					</a>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<main class="main" role="main">
+		<section class="dashboard" aria-labelledby="dashboard-title">
+			<div class="container">
+				<h1 id="dashboard-title">Your Banking Dashboard</h1>
+				<p class="lead">Manage your account and transactions securely.</p>
+
+				<!-- Account Overview Card -->
+				<div class="card account-overview" role="region" aria-label="Account overview">
+					<div class="account-header">
+						<h2>Account Overview</h2>
+						<div class="account-number">Account: {{ account_number }}</div>
+					</div>
+					<div class="balance-section">
+						<div class="balance-label">Current Balance</div>
+						<div class="balance-amount">${{ "%.2f"|format(balance) }}</div>
+					</div>
+					<div class="balance-actions">
+						<button class="btn btn-secondary" id="refreshBalance">
+							<svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+								<polyline points="23,4 23,10 17,10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<polyline points="1,20 1,14 7,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							Refresh
+						</button>
+					</div>
+				</div>
+
+				<!-- Quick Actions Grid -->
+				<div class="actions-grid">
+					<div class="action-card" role="button" tabindex="0" id="policiesCard">
+						<div class="action-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M12 1v6m0 0l-3-3m3 3l3-3m-3 3v6m0 0l-3 3m3-3l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M3 12h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+							</svg>
+						</div>
+						<h3>Check Policies</h3>
+						<p>Review and invest in bank policies (max 2)</p>
+					</div>
+
+					<div class="action-card" role="button" tabindex="0" id="sendMoneyCard">
+						<div class="action-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm7-5a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+						<h3>Send Money</h3>
+						<p>Transfer funds to another account or pay bills</p>
+					</div>
+
+					<div class="action-card" role="button" tabindex="0" id="transactionHistoryCard">
+						<div class="action-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<polyline points="14,2 14,8 20,8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<line x1="16" y1="13" x2="8" y2="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+								<line x1="16" y1="17" x2="8" y2="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+								<polyline points="10,9 9,9 8,9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+						<h3>Transaction History</h3>
+						<p>View all your past transactions and statements</p>
+					</div>
+
+					<div class="action-card" role="button" tabindex="0" id="profileCard">
+						<div class="action-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+						<h3>Profile Settings</h3>
+						<p>Update your personal information and preferences</p>
+					</div>
+
+					<div class="action-card" role="button" tabindex="0" id="chatbotCard">
+						<div class="action-icon">
+							<svg width="32" height="32" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M21 15a4 4 0 0 1-4 4H9l-4 3v-7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+						</div>
+						<h3>Chatbot</h3>
+						<p>Get AI advice on the best policy for you</p>
+					</div>
+				</div>
+
+				<!-- Your Policies Section -->
+				<div class="card recent-activity" role="region" aria-label="Your policies">
+					<h2>Your Policies</h2>
+					<div class="activity-list">
+						{% if user_policies and user_policies|length > 0 %}
+							{% for p in user_policies %}
+							<div class="activity-item">
+								<div class="activity-icon">
+									<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+										<circle cx="12" cy="12" r="3" fill="currentColor"/>
+									</svg>
+								</div>
+								<div class="activity-content">
+									<div class="activity-title">{{ p.name }}</div>
+									<div class="activity-desc">{{ p.description or 'Policy' }} — Risk: {{ p.risk_level }}, Expected Return: {{ '%.1f'|format(p.expected_return) }}%</div>
+									<div class="activity-time">Invested at: {{ p.invested_at }}</div>
+								</div>
+							</div>
+							{% endfor %}
+						{% else %}
+							<div class="activity-item">
+								<div class="activity-content">
+									<div class="activity-title">No policies yet</div>
+									<div class="activity-desc">Browse our offerings and invest in up to two policies.</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+
+				<!-- Recent Activity Section -->
+				<div class="card recent-activity" role="region" aria-label="Recent activity">
+					<h2>Recent Activity</h2>
+					<div class="activity-list">
+						<div class="activity-item">
+							<div class="activity-icon">
+								<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+									<circle cx="12" cy="12" r="3" fill="currentColor"/>
+								</svg>
+							</div>
+							<div class="activity-content">
+								<div class="activity-title">Account Created</div>
+								<div class="activity-desc">Welcome to Apex Bank! Your account is now active.</div>
+								<div class="activity-time">Just now</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<small>&copy; <span id="year"></span> Apex Bank Management System.</small>
+	</footer>
+
+	<!-- Flash Messages -->
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			<div class="flash-messages">
+				{% for category, message in messages %}
+					<div class="flash flash-{{ category }}" role="alert">
+						<span>{{ message }}</span>
+						<button class="flash-close" aria-label="Close message">&times;</button>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	{% endwith %}
+</body>
+</html>

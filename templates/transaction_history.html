@@ -1,0 +1,273 @@
+<!-- transaction_history.html -->
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Transaction History — Apex Bank Management System</title>
+	<meta name="description" content="View your transaction history with Apex Bank.">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/transaction_history.css') }}">
+	<script src="{{ url_for('static', filename='js/transaction_history.js') }}" defer></script>
+</head>
+<body>
+	<!-- Animated background (pure CSS; respects reduced motion) -->
+	<div class="bg" aria-hidden="true">
+		<span class="bubble b1"></span>
+		<span class="bubble b2"></span>
+		<span class="bubble b3"></span>
+		<span class="bubble b4"></span>
+		<span class="bubble b5"></span>
+		<span class="bubble b6"></span>
+	</div>
+
+	<header class="site-header" role="banner">
+		<nav class="nav" aria-label="Primary">
+			<a class="brand" href="/" aria-label="Apex Bank home">
+				<!-- Inline SVG placeholder logo -->
+				<svg class="logo" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+					<defs>
+						<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#7ec8e3"/>
+							<stop offset="100%" stop-color="#9be3c7"/>
+						</linearGradient>
+					</defs>
+					<circle cx="24" cy="24" r="20" fill="url(#g)"></circle>
+					<path d="M12 28 L24 14 L36 28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M17 28 V34 H31 V28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="brand-name">Apex Bank</span>
+			</a>
+			<div class="user-info">
+				<span class="welcome">Welcome, <strong>{{ username }}</strong></span>
+				<div class="nav-links">
+					<a href="/dashboard" class="nav-link">Dashboard</a>
+					<a href="/send_money" class="nav-link">Send Money</a>
+					<a href="/logout" class="logout-btn" aria-label="Logout">
+						<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<polyline points="16,17 21,12 16,7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<line x1="21" y1="12" x2="9" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+						Logout
+					</a>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<main class="main" role="main">
+		<section class="transaction-history" aria-labelledby="history-title">
+			<div class="container">
+				<div class="page-header">
+					<h1 id="history-title">Transaction History</h1>
+					<p class="lead">View all your past transactions and statements</p>
+				</div>
+
+				<!-- Account Overview Card -->
+				<div class="card account-overview" role="region" aria-label="Account overview">
+					<div class="account-header">
+						<h2>Your Account</h2>
+						<div class="account-number">Account: {{ account_number }}</div>
+					</div>
+					<div class="balance-section">
+						<div class="balance-label">Current Balance</div>
+						<div class="balance-amount">${{ "%.2f"|format(balance) }}</div>
+					</div>
+					<div class="balance-actions">
+						<button class="btn btn-secondary" id="refreshBtn">
+							<svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+								<polyline points="23,4 23,10 17,10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<polyline points="1,20 1,14 7,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								<path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							</svg>
+							Refresh
+						</button>
+					</div>
+				</div>
+
+				<!-- Filters and Search -->
+				<div class="card filters" role="region" aria-label="Transaction filters">
+					<h2>Filter Transactions</h2>
+					<div class="filter-controls">
+						<div class="filter-group">
+							<label for="dateFrom" class="filter-label">From Date</label>
+							<input type="date" id="dateFrom" class="filter-input" aria-describedby="dateFromHelp">
+							<div id="dateFromHelp" class="filter-help">Start date for transaction search</div>
+						</div>
+						<div class="filter-group">
+							<label for="dateTo" class="filter-label">To Date</label>
+							<input type="date" id="dateTo" class="filter-input" aria-describedby="dateToHelp">
+							<div id="dateToHelp" class="filter-help">End date for transaction search</div>
+						</div>
+						<div class="filter-group">
+							<label for="transactionType" class="filter-label">Transaction Type</label>
+							<select id="transactionType" class="filter-input" aria-describedby="typeHelp">
+								<option value="">All Types</option>
+								<option value="transfer">Money Transfer</option>
+								<option value="deposit">Deposit</option>
+								<option value="withdrawal">Withdrawal</option>
+								<option value="loan">Loan</option>
+							</select>
+							<div id="typeHelp" class="filter-help">Filter by transaction type</div>
+						</div>
+						<div class="filter-group">
+							<label for="searchTerm" class="filter-label">Search</label>
+							<input type="text" id="searchTerm" class="filter-input" placeholder="Search transactions..." aria-describedby="searchHelp">
+							<div id="searchHelp" class="filter-help">Search by description or account number</div>
+						</div>
+					</div>
+					<div class="filter-actions">
+						<button class="btn btn-secondary" id="clearFiltersBtn">Clear Filters</button>
+						<button class="btn btn-primary" id="applyFiltersBtn">Apply Filters</button>
+					</div>
+				</div>
+
+				<!-- Transaction Summary -->
+				<div class="card summary" role="region" aria-label="Transaction summary">
+					<h2>Transaction Summary</h2>
+					<div class="summary-grid">
+						<div class="summary-item">
+							<div class="summary-label">Total Transactions</div>
+							<div class="summary-value" id="totalTransactions">{{ transactions|length }}</div>
+						</div>
+						<div class="summary-item">
+							<div class="summary-label">Money Sent</div>
+							<div class="summary-value sent" id="totalSent">$0.00</div>
+						</div>
+						<div class="summary-item">
+							<div class="summary-label">Money Received</div>
+							<div class="summary-value received" id="totalReceived">$0.00</div>
+						</div>
+						<div class="summary-item">
+							<div class="summary-label">This Month</div>
+							<div class="summary-value" id="thisMonth">{{ transactions|length }}</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Transaction List -->
+				<div class="card transactions" role="region" aria-label="Transaction list">
+					<div class="transactions-header">
+						<h2>All Transactions</h2>
+						<div class="view-controls">
+							<button class="view-btn active" id="listViewBtn" aria-label="List view">
+								<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+									<line x1="8" y1="6" x2="21" y2="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+									<line x1="8" y1="12" x2="21" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+									<line x1="8" y1="18" x2="21" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+									<line x1="3" y1="6" x2="3.01" y2="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+									<line x1="3" y1="12" x2="3.01" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+									<line x1="3" y1="18" x2="3.01" y2="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+								</svg>
+							</button>
+							<button class="view-btn" id="cardViewBtn" aria-label="Card view">
+								<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+									<rect x="3" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<rect x="14" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+									<rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+							</button>
+						</div>
+					</div>
+					
+					<div class="transactions-list" id="transactionsList">
+						{% if transactions %}
+							{% for transaction in transactions %}
+							<div class="transaction-item" data-type="{{ transaction.tx_type }}" data-date="{{ transaction.created_at }}">
+								<div class="transaction-icon">
+									{% if transaction.tx_type == 'transfer' %}
+										<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+											<path d="M17 9V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2m2 4h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm7-5a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+										</svg>
+									{% elif transaction.tx_type == 'deposit' %}
+										<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+											<path d="M12 2v20m0-20l4 4m-4-4l-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+										</svg>
+									{% elif transaction.tx_type == 'withdrawal' %}
+										<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+											<path d="M12 22V2m0 20l4-4m-4 4l-4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+										</svg>
+									{% else %}
+										<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+											<circle cx="12" cy="12" r="3" fill="currentColor"/>
+										</svg>
+									{% endif %}
+								</div>
+								<div class="transaction-content">
+									<div class="transaction-header">
+										<div class="transaction-title">
+											{% if transaction.tx_type == 'transfer' %}
+												{% if transaction.from_account_id == account_id %}
+													Sent to {{ transaction.to_account_number }}
+												{% else %}
+													Received from {{ transaction.from_account_number }}
+												{% endif %}
+											{% elif transaction.tx_type == 'deposit' %}
+												Deposit
+											{% elif transaction.tx_type == 'withdrawal' %}
+												Withdrawal
+											{% else %}
+												{{ transaction.tx_type|title }}
+											{% endif %}
+										</div>
+										<div class="transaction-amount {% if transaction.from_account_id == account_id %}sent{% else %}received{% endif %}">
+											{% if transaction.from_account_id == account_id %}
+												-${{ "%.2f"|format(transaction.amount) }}
+											{% else %}
+												+${{ "%.2f"|format(transaction.amount) }}
+											{% endif %}
+										</div>
+									</div>
+									<div class="transaction-details">
+										<div class="transaction-description">
+											{{ transaction.description or 'No description provided' }}
+										</div>
+										<div class="transaction-meta">
+											<span class="transaction-date">{{ transaction.created_at }}</span>
+											<span class="transaction-id">ID: {{ transaction.id }}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						{% else %}
+							<div class="empty-state">
+								<div class="empty-icon">
+									<svg width="64" height="64" viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+										<polyline points="14,2 14,8 20,8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+										<line x1="16" y1="13" x2="8" y2="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+										<line x1="16" y1="17" x2="8" y2="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+									</svg>
+								</div>
+								<h3>No Transactions Yet</h3>
+								<p>Your transaction history will appear here once you start making transfers or deposits.</p>
+								<a href="/send_money" class="btn btn-primary">Send Your First Transfer</a>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<small>&copy; <span id="year"></span> Apex Bank Management System.</small>
+	</footer>
+
+	<!-- Flash Messages -->
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			<div class="flash-messages">
+				{% for category, message in messages %}
+					<div class="flash flash-{{ category }}" role="alert">
+						<span>{{ message }}</span>
+						<button class="flash-close" aria-label="Close message">&times;</button>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	{% endwith %}
+</body>
+</html>

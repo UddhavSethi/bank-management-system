@@ -38,11 +38,9 @@ document.addEventListener('DOMContentLoaded', function(){
 		});
 	}
 
-	// Simple validation and logging
+	// Form validation and submission
 	if (form){
 		form.addEventListener('submit', function(e){
-			e.preventDefault();
-
 			var hasError = false;
 			// Clear errors
 			if (userError) userError.textContent = '';
@@ -60,16 +58,13 @@ document.addEventListener('DOMContentLoaded', function(){
 				hasError = true;
 			}
 
-			if (hasError) return;
+			if (hasError) {
+				e.preventDefault();
+				return;
+			}
 
-			// For now, just log credentials (do not send to backend)
-			console.log({
-				username: userInput ? userInput.value.trim() : '',
-				password: passInput ? passInput.value : ''
-			});
-
-			// Hook real auth navigation here
-			// window.location.href = '/dashboard';
+			// If validation passes, let the form submit to the server
+			console.log('Login form validation passed, submitting to server...');
 		});
 	}
 

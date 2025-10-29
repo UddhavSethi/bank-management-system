@@ -1,0 +1,99 @@
+<!-- chatbot.html -->
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Chatbot — Apex Bank Management System</title>
+	<meta name="description" content="Get AI advice on policies.">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/send_money.css') }}">
+	<script src="{{ url_for('static', filename='js/chatbot.js') }}" defer></script>
+</head>
+<body>
+	<div class="bg" aria-hidden="true">
+		<span class="bubble b1"></span>
+		<span class="bubble b2"></span>
+		<span class="bubble b3"></span>
+		<span class="bubble b4"></span>
+		<span class="bubble b5"></span>
+		<span class="bubble b6"></span>
+	</div>
+
+	<header class="site-header" role="banner">
+		<nav class="nav" aria-label="Primary">
+			<a class="brand" href="/" aria-label="Apex Bank home">
+				<svg class="logo" width="28" height="28" viewBox="0 0 48 48" aria-hidden="true">
+					<defs>
+						<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0%" stop-color="#7ec8e3"/>
+							<stop offset="100%" stop-color="#9be3c7"/>
+						</linearGradient>
+					</defs>
+					<circle cx="24" cy="24" r="20" fill="url(#g)"></circle>
+					<path d="M12 28 L24 14 L36 28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+					<path d="M17 28 V34 H31 V28" fill="none" stroke="#0b3a4a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+				<span class="brand-name">Apex Bank</span>
+			</a>
+			<div class="user-info">
+				<span class="welcome">Welcome, <strong>{{ username }}</strong></span>
+				<div class="nav-links">
+					<a href="/dashboard" class="nav-link">Dashboard</a>
+					<a href="/logout" class="logout-btn" aria-label="Logout">
+						<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<polyline points="16,17 21,12 16,7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<line x1="21" y1="12" x2="9" y2="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+						</svg>
+						Logout
+					</a>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<main class="main" role="main">
+		<section class="send-money" aria-labelledby="chatbot-title">
+			<div class="container">
+				<div class="page-header">
+					<h1 id="chatbot-title">Policy Advice Chatbot</h1>
+					<p class="lead">Describe your goals and risk appetite. We'll suggest a policy.</p>
+				</div>
+
+				<div class="card send-form" role="region" aria-label="Chatbot">
+					<h2>Chat</h2>
+					<div id="chatWindow" class="form" style="display:flex; flex-direction:column; gap:1rem; max-height:360px; overflow:auto; padding-bottom: .5rem;"></div>
+					<form id="chatForm" class="form" onsubmit="return false;">
+						<div class="form-group">
+							<label for="chatInput" class="form-label">Tell us about your preferences</label>
+							<textarea id="chatInput" class="form-input" rows="3" placeholder="E.g., Medium risk, 2-3 years horizon, some liquidity..."></textarea>
+						</div>
+						<div class="form-actions">
+							<button id="sendBtn" class="btn btn-primary" type="submit">Send</button>
+							<a href="/policies" class="btn btn-secondary">View Policies</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer" role="contentinfo">
+		<small>&copy; <span id="year"></span> Apex Bank Management System.</small>
+	</footer>
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+			<div class="flash-messages">
+				{% for category, message in messages %}
+					<div class="flash flash-{{ category }}" role="alert">
+						<span>{{ message }}</span>
+						<button class="flash-close" aria-label="Close message">&times;</button>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
+	{% endwith %}
+</body>
+</html>
+

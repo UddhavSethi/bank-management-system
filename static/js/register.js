@@ -6,14 +6,11 @@ document.addEventListener('DOMContentLoaded', function(){
 	if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
 	var form = document.getElementById('registerForm');
-	var fullName = document.getElementById('fullName');
-	var email = document.getElementById('email');
-	var phone = document.getElementById('phone');
+	var username = document.getElementById('username');
 	var password = document.getElementById('password');
 	var confirm = document.getElementById('confirm');
 	var terms = document.getElementById('terms');
-	var nameError = document.getElementById('nameError');
-	var emailError = document.getElementById('emailError');
+	var usernameError = document.getElementById('usernameError');
 	var passError = document.getElementById('passError');
 	var confirmError = document.getElementById('confirmError');
 	var termsError = document.getElementById('termsError');
@@ -50,32 +47,24 @@ document.addEventListener('DOMContentLoaded', function(){
 
 	if (form){
 		form.addEventListener('submit', function(e){
-			e.preventDefault();
-
 			var submitBtn = document.getElementById('createBtn');
 			if (submitBtn) submitBtn.disabled = true;
 
 			// Clear errors
-			if (nameError) nameError.textContent = '';
-			if (emailError) emailError.textContent = '';
+			if (usernameError) usernameError.textContent = '';
 			if (passError) passError.textContent = '';
 			if (confirmError) confirmError.textContent = '';
 			if (termsError) termsError.textContent = '';
 
 			var hasError = false;
 
-			if (!fullName || fullName.value.trim() === ''){
-				if (nameError) nameError.textContent = 'Full name is required.';
+			if (!username || username.value.trim() === ''){
+				if (usernameError) usernameError.textContent = 'Username is required.';
 				hasError = true;
 			}
 
-			if (!email || email.value.trim() === '' || !validateEmail(email.value.trim())){
-				if (emailError) emailError.textContent = 'Enter a valid email address.';
-				hasError = true;
-			}
-
-			if (!password || password.value.length < 8){
-				if (passError) passError.textContent = 'Password must be at least 8 characters.';
+			if (!password || password.value.length < 6){
+				if (passError) passError.textContent = 'Password must be at least 6 characters.';
 				hasError = true;
 			}
 
@@ -90,20 +79,13 @@ document.addEventListener('DOMContentLoaded', function(){
 			}
 
 			if (hasError){
+				e.preventDefault();
 				if (submitBtn) submitBtn.disabled = false;
 				return;
 			}
 
-			console.log({
-				fullName: fullName ? fullName.value.trim() : '',
-				email: email ? email.value.trim() : '',
-				phone: phone ? phone.value.trim() : '',
-				password: password ? password.value : ''
-			});
-
-			// Simulate success UI
-			alert('Account details look good! (Client-side validation passed)');
-			if (submitBtn) submitBtn.disabled = false;
+			// If no errors, let the form submit normally to the server
+			console.log('Form validation passed, submitting to server...');
 		});
 	}
 

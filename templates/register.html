@@ -47,28 +47,17 @@
 				<h1 id="register-title">Create your account</h1>
 				<p class="lead">A few details to get you started.</p>
 
-				<form id="registerForm" class="form" novalidate aria-describedby="formHelp">
+				<form id="registerForm" class="form" method="POST" novalidate aria-describedby="formHelp">
 					<div class="field">
-						<label for="fullName">Full name</label>
-						<input id="fullName" name="fullName" type="text" autocomplete="name" required aria-required="true" placeholder="Jane Doe">
-						<p class="error" id="nameError" role="alert" aria-live="polite"></p>
-					</div>
-
-					<div class="field">
-						<label for="email">Email</label>
-						<input id="email" name="email" type="email" autocomplete="email" required aria-required="true" placeholder="you@example.com">
-						<p class="error" id="emailError" role="alert" aria-live="polite"></p>
-					</div>
-
-					<div class="field">
-						<label for="phone">Phone (optional)</label>
-						<input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567">
+						<label for="username">Username</label>
+						<input id="username" name="username" type="text" autocomplete="username" required aria-required="true" placeholder="Choose a username">
+						<p class="error" id="usernameError" role="alert" aria-live="polite"></p>
 					</div>
 
 					<div class="field">
 						<label for="password">Password</label>
 						<div class="password-wrap">
-							<input id="password" name="password" type="password" autocomplete="new-password" required aria-required="true" minlength="8" placeholder="At least 8 characters">
+							<input id="password" name="password" type="password" autocomplete="new-password" required aria-required="true" minlength="6" placeholder="At least 6 characters">
 							<button type="button" class="toggle" id="togglePwd" aria-label="Show password" aria-pressed="false" title="Toggle password visibility">
 								<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
 									<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" fill="none" stroke="currentColor" stroke-width="2"/>
