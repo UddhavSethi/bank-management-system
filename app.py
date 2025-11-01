@@ -1,3 +1,7 @@
+print("--- THIS IS THE NEW FILE, TEST 123 ---")
+from dotenv import load_dotenv
+load_dotenv() # Loads the .env file
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
 import os
@@ -6,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import urllib.request
 import urllib.error
+import google.generativeai as genai
 
 DB_PATH = "simple_bank.db"
 
@@ -15,9 +20,25 @@ def create_app() -> Flask:
     # Ensure templates and static files don't get cached while developing
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    # Configure Gemini API key from env, with fallback to provided key for local use
-    app.config["GEMINI_API_KEY"] = os.getenv("GEMINI_API_KEY") or "AIzaSyAA8Oo-YIiE8bNGDkcZoVnRhMpfv8NB3uA"
+    # Configure Gemini API key from env
+    app.config["GEMINI_API_KEY"] = os.getenv("GEMINI_API_KEY")
     print("Gemini key loaded:", bool(app.config["GEMINI_API_KEY"]))
+    
+    # --- ADD THIS NEW BLOCK ---
+    global model  # Make the model globally accessible
+    try:
+        api_key = app.config["GEMINI_API_KEY"]
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found. Make sure it's in your .env file.")
+
+        genai.configure(api_key=api_key)
+        # Initialize the model here
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        print("Gemini model initialized successfully.")
+    except Exception as e:
+        print(f"Error initializing Gemini model: {e}")
+        model = None
+    # --- END OF NEW BLOCK ---
 
     # ---------- Initialize Database ----------
     def init_db():
@@ -51,21 +72,21 @@ def create_app() -> Flask:
                 conn.execute("DELETE FROM policies")
                 conn.executescript("""
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (1, 'Safe Savings', 'Low', 3.0, 50, 'A secure, low-yield savings product backed by government or bank securities. Ideal for conservative investors or those maintaining emergency funds.', 'Capital preservation and quick liquidity.', 'None (withdraw anytime)', 'High');
+                    (1, 'Safe Savings', 'Low', 3.0, 50, 'A secure, low-yield savings product backed by government or bank securities. Ideal for conservative investors or those maintaining emergency funds.', 'Capital preservation and quick liquidity.', 'None (withdraw anytime)', 'High');
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (2, 'Short-Term Bond Fund', 'Low', 4.0, 100, 'Invests in short-duration bonds and debt instruments. Slightly higher returns than savings accounts but minimal volatility.', 'Low-risk short-term growth (1–2 years).', NULL, 'Moderate');
+                    (2, 'Short-Term Bond Fund', 'Low', 4.0, 100, 'Invests in short-duration bonds and debt instruments. Slightly higher returns than savings accounts but minimal volatility.', 'Low-risk short-term growth (1–2 years).', NULL, 'Moderate');
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (3, 'Balanced Growth', 'Medium', 6.5, 200, 'A mix of equity (60%) and debt (40%) to balance risk and reward. Designed for users with medium risk tolerance and long-term goals.', 'Steady wealth growth.', '2 years recommended', NULL);
+                    (3, 'Balanced Growth', 'Medium', 6.5, 200, 'A mix of equity (60%) and debt (40%) to balance risk and reward. Designed for users with medium risk tolerance and long-term goals.', 'Steady wealth growth.', '2 years recommended', NULL);
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (4, 'Aggressive Equity', 'High', 12.0, 300, 'Focuses on high-growth stocks and equity funds. Suitable for users willing to tolerate market volatility for higher returns.', 'Long-term capital appreciation.', '3 years recommended', NULL);
+                    (4, 'Aggressive Equity', 'High', 12.0, 300, 'Focuses on high-growth stocks and equity funds. Suitable for users willing to tolerate market volatility for higher returns.', 'Long-term capital appreciation.', '3 years recommended', NULL);
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (5, 'Global Opportunity Fund', 'High', 10.0, 250, 'Diversified portfolio across international markets and emerging economies. Offers global diversification and currency exposure.', 'Diversified long-term growth.', '3–5 years recommended', NULL);
+                    (5, 'Global Opportunity Fund', 'High', 10.0, 250, 'Diversified portfolio across international markets and emerging economies. Offers global diversification and currency exposure.', 'Diversified long-term growth.', '3–5 years recommended', NULL);
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (6, 'Green Future Fund', 'Medium', 7.0, 150, 'Invests in renewable energy, EVs, and sustainable infrastructure. Great for eco-conscious investors seeking moderate returns with positive impact.', 'Ethical investing and stable growth.', '2 years recommended', NULL);
+                    (6, 'Green Future Fund', 'Medium', 7.0, 150, 'Invests in renewable energy, EVs, and sustainable infrastructure. Great for eco-conscious investors seeking moderate returns with positive impact.', 'Ethical investing and stable growth.', '2 years recommended', NULL);
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (7, 'Digital Assets Index', 'High', 15.0, 200, 'Exposure to leading digital assets (crypto index) with auto-balancing and capped volatility. High reward potential but carries substantial risk.', 'Growth and diversification for tech-savvy investors.', '3–4 years', NULL);
+                    (7, 'Digital Assets Index', 'High', 15.0, 200, 'Exposure to leading digital assets (crypto index) with auto-balancing and capped volatility. High reward potential but carries substantial risk.', 'Growth and diversification for tech-savvy investors.', '3–4 years', NULL);
                 INSERT OR IGNORE INTO policies (id, name, risk_level, expected_return, min_investment, description, goal, lock_in, liquidity) VALUES
-                  (8, 'Real Estate Mini Trust', 'Medium', 8.0, 250, 'Fractional real-estate investment in rental and commercial properties. Provides steady passive income through rent yields.', 'Passive income and inflation hedge.', '2 years', NULL);
+                    (8, 'Real Estate Mini Trust', 'Medium', 8.0, 250, 'Fractional real-estate investment in rental and commercial properties. Provides steady passive income through rent yields.', 'Passive income and inflation hedge.', '2 years', NULL);
                 """)
                 conn.commit()
         except sqlite3.Error:
@@ -207,10 +228,10 @@ def create_app() -> Flask:
             ).fetchall()
             
             return render_template("dashboard.html", 
-                                 username=session["username"],
-                                 account_number=account["account_number"],
-                                 balance=account["balance"],
-                                 user_policies=user_policies)
+                                   username=session["username"],
+                                   account_number=account["account_number"],
+                                   balance=account["balance"],
+                                   user_policies=user_policies)
         except sqlite3.Error as e:
             flash(f"Database error: {str(e)}", "error")
             return redirect(url_for("login"))
@@ -316,10 +337,10 @@ def create_app() -> Flask:
                                          balance=account["balance"])
             
             return render_template("send_money.html", 
-                                 username=session["username"],
-                                 account_number=account["account_number"],
-                                 balance=account["balance"])
-                                 
+                                   username=session["username"],
+                                   account_number=account["account_number"],
+                                   balance=account["balance"])
+                                   
         except sqlite3.Error as e:
             flash(f"Database error: {str(e)}", "error")
             return redirect(url_for("dashboard"))
@@ -364,12 +385,12 @@ def create_app() -> Flask:
             """, (account["id"], account["id"])).fetchall()
             
             return render_template("transaction_history.html", 
-                                 username=session["username"],
-                                 account_number=account["account_number"],
-                                 balance=account["balance"],
-                                 account_id=account["id"],
-                                 transactions=transactions)
-                                 
+                                   username=session["username"],
+                                   account_number=account["account_number"],
+                                   balance=account["balance"],
+                                   account_id=account["id"],
+                                   transactions=transactions)
+                                   
         except sqlite3.Error as e:
             flash(f"Database error: {str(e)}", "error")
             return redirect(url_for("dashboard"))
@@ -459,13 +480,13 @@ def create_app() -> Flask:
             ).fetchone()
             
             return render_template("profile.html",
-                                 username=user["username"],
-                                 email=user["email"] or "",
-                                 phone=user["phone"] or "",
-                                 created_at=user["created_at"],
-                                 account_number=account["account_number"],
-                                 balance=account["balance"])
-                                 
+                                   username=user["username"],
+                                   email=user["email"] or "",
+                                   phone=user["phone"] or "",
+                                   created_at=user["created_at"],
+                                   account_number=account["account_number"],
+                                   balance=account["balance"])
+                                   
         except sqlite3.Error as e:
             flash(f"Database error: {str(e)}", "error")
             return redirect(url_for("dashboard"))
@@ -569,66 +590,46 @@ def create_app() -> Flask:
             db.close()
 
     def call_gemini_api(messages: list, policy_list: list, user_context: dict) -> str:
-        # Read from Flask config or fall back to live environment each call
-        api_key = app.config.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            return "Gemini API key is not configured on the server."
+        """
+        Calls the Gemini API using the 'google-generativeai' library.
+        """
+        global model # Access the model we created in create_app
+        if model is None:
+            return "Gemini API is not configured on the server."
 
-        # Build a concise system instruction and content
+        # Build the system instruction and prompt
         system_instructions = (
-            "You are an AI investment assistant for a bank. "
+            "You are an AI investment assistant for Apex Bank. "
             "First, ask the user about their preferences (risk level, time horizon, liquidity needs). "
             "Then, recommend the top two policies from the provided list that best match. "
             "Respond clearly with brief reasoning and the two choices."
         )
 
-        content_blocks = [
-            {"role": "user", "parts": [{"text": system_instructions}]},
-            {
-                "role": "user",
-                "parts": [{
-                    "text": "Available policies (JSON):\n" + json.dumps(policy_list, ensure_ascii=False)
-                }]
-            },
-            {
-                "role": "user",
-                "parts": [{
-                    "text": "User context (JSON):\n" + json.dumps(user_context, ensure_ascii=False)
-                }]
-            }
-        ]
-
-        # Append conversation messages
-        for m in messages:
-            content_blocks.append({"role": m.get("role", "user"), "parts": [{"text": m.get("content", "")}]} )
-
-        url = (
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-            "gemini-1.5-flash-latest:generateContent?key=" + api_key
+        # Create a combined prompt for the model
+        full_prompt = (
+            f"{system_instructions}\n\n"
+            f"--- AVAILABLE POLICIES ---\n{json.dumps(policy_list, indent=2)}\n\n"
+            f"--- USER CONTEXT ---\n{json.dumps(user_context, indent=2)}\n\n"
+            f"--- CONVERSATION HISTORY ---\n"
         )
-        payload = {"contents": content_blocks}
-        data = json.dumps(payload).encode("utf-8")
 
-        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+        # Add conversation history
+        for m in messages:
+            # Change 'model' to 'assistant' for the prompt
+            role = m.get("role", "user").replace("model", "assistant")
+            full_prompt += f"{role}: {m.get('content', '')}\n"
+    
+        # Add the final "assistant:" prefix to prompt the model to respond
+        full_prompt += "assistant:"
+
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw = resp.read()
-                obj = json.loads(raw.decode("utf-8"))
-                # Navigate response structure
-                candidates = obj.get("candidates") or []
-                if candidates:
-                    parts = candidates[0].get("content", {}).get("parts", [])
-                    if parts and "text" in parts[0]:
-                        return parts[0]["text"]
-                return "Sorry, I couldn't generate a response right now."
-        except urllib.error.HTTPError as e:
-            try:
-                err_body = e.read().decode("utf-8")
-            except Exception:
-                err_body = str(e)
-            return f"Gemini API error: {e.code} {err_body}"
+            # The library's generate_content method is much simpler
+            response = model.generate_content(full_prompt)
+            return response.text
         except Exception as e:
-            return f"Gemini request failed: {str(e)}"
+            # Handle potential API errors
+            print(f"Gemini API Error: {e}")
+            return f"Gemini API error: {str(e)}"
 
     @app.route("/api/chatbot", methods=["POST"])
     def chatbot_api():
@@ -682,6 +683,7 @@ def create_app() -> Flask:
             return {"reply": reply_text}
         finally:
             db.close()
+            
     @app.route("/logout")
     def logout():
         session.clear()
