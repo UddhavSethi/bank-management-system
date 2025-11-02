@@ -12,7 +12,7 @@ import urllib.request
 import urllib.error
 import google.generativeai as genai
 
-DB_PATH = "simple_bank.db"
+DB_PATH = "/var/data/simple_bank.db"
 
 def create_app() -> Flask:
     app = Flask(__name__)
